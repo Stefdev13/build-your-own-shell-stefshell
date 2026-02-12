@@ -7,7 +7,11 @@ const rl = createInterface({
 
 function run() {
   rl.question("$ ", (command) => {
-    console.log(`${command}: command not found`);
+    if (command.toLowerCase() == "exit") {
+      process.exit();
+    } else {
+      console.log(`${command}: command not found`);
+    }
     run();
   });
 }
