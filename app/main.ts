@@ -1,4 +1,5 @@
 import { createInterface } from "readline";
+import { builtins } from "./constants/builtins";
 
 const rl = createInterface({
   input: process.stdin,
@@ -7,22 +8,22 @@ const rl = createInterface({
 
 function run() {
   rl.question("$ ", (command: string) => {
-    const indexOfFirstSpace: number = command.indexOf(" ");
-    const firstCommand: string =
-      indexOfFirstSpace > 0
-        ? command.slice(0, indexOfFirstSpace)
-        : command.slice(0);
+    const splitCommand: string[] = command.split(" ");
 
-    const commandParams: string =
-      indexOfFirstSpace > 0 ? command.slice(indexOfFirstSpace).trim() : "";
-
-    switch (firstCommand.toLowerCase()) {
+    switch (splitCommand[0]) {
       case "q":
         process.exit();
       case "exit":
         process.exit();
       case "echo":
-        rl.write(`${commandParams} \n`);
+        rl.write(`${splitCommand.slice(1).join(" ")} \n`);
+        break;
+      case "type":
+        if (builtins.includes(splitCommand.slice(1).join(" "))) {
+          rl.write(`${splitCommand.slice(1).join(" ")} is a shell builtin \n`);
+        } else {
+          console.log(`${splitCommand.slice(1).join(" ")}: not found`);
+        }
         break;
       default:
         console.log(`${command}: command not found`);
