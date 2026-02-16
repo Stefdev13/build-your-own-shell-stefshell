@@ -1,6 +1,8 @@
 import { createInterface } from "readline";
 import { commands } from "./services/commands/commands";
 import type { Command } from "./services/types/command";
+import { checkIfCmdIsExeAndReturnPath } from "./services/functions/checkIfCmdIsExeAndReturnPath";
+import { execSync } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -17,8 +19,12 @@ function run() {
     //Check if the command is found
     if (typeof cmd != "undefined") {
       cmd(rl, splitCommand.slice(1));
+    } else if (checkIfCmdIsExeAndReturnPath(splitCommand[0])) {
+      execSync(command, {
+        stdio: "inherit",
+      });
     } else {
-      console.log(`${command}: command not found`);
+      rl.write(`${command}: command not found \n`);
     }
     run();
   });
